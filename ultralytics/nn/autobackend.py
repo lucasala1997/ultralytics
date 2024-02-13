@@ -390,7 +390,7 @@ class AutoBackend(nn.Module):
             y = self.net.forward()
         elif self.onnx:  # ONNX Runtime
             im = im.cpu().numpy()  # torch to numpy
-            y = self.session.run(self.output_names, {self.session.get_inputs()[0].name: im})
+            y = self.session.run(self.output_names, {self.session.get_inputs()[0].name: np.tile(im, reps=[8, 1, 1, 1])})[0]
         elif self.xml:  # OpenVINO
             im = im.cpu().numpy()  # FP32
             y = list(self.ov_compiled_model(im).values())
